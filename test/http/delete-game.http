@@ -1,0 +1,5 @@
+### Show all games
+GET http://localhost:4004/odata/v4/game/Games?$select=ID,winner
+
+### Delete a game by ID
+DELETE http://localhost:4004/odata/v4/game/Games(082c6367-5757-494d-8680-6cb16eb7e1a4)

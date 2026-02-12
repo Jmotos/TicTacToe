@@ -1,0 +1,41 @@
+{
+  "name": "tictactoe",
+  "version": "1.0.0",
+  "description": "Technical Challenge: Tic-Tac-Toe Game with SAP CAP & UI5",
+  "scripts": {
+    "start": "cds watch",
+    "test": "jest",
+    "deploy:sqlite": "cds deploy --to sqlite"
+  },
+  "dependencies": {
+    "@sap/cds": "^9.7.1",
+    "express": "^4"
+  },
+  "devDependencies": {
+    "@cap-js/cds-test": "^0.4.1",
+    "@cap-js/sqlite": "^2",
+    "@sap/cds-dk": "^9.7.1",
+    "jest": "^30.2.0",
+    "supertest": "^7.2.2"
+  },
+  "cds": {
+    "requires": {
+      "db": {
+        "kind": "sqlite",
+        "credentials": {
+          "database": "db.sqlite"
+        }
+      }
+    },
+    "[test]": {
+      "requires": {
+        "db": {
+          "kind": "sqlite",
+          "credentials": {
+            "database": ":memory:"
+          }
+        }
+      }
+    }
+  }
+}

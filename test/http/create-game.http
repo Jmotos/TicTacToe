@@ -1,0 +1,11 @@
+### Create a new game
+POST http://localhost:4004/odata/v4/game/Games
+Content-Type: application/json
+
+{
+  "player1": "Jorge",
+  "player2": "Maria"
+}
+
+### Show all games
+GET http://localhost:4004/odata/v4/game/Games

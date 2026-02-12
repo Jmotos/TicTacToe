@@ -1,0 +1,7 @@
+node_modules/
+db.sqlite*
+*.db
+.env
+coverage/
+package-lock.json
+.vscode/
