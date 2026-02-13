@@ -3,7 +3,6 @@ sap.ui.define([
 ], function (BaseController, MessageBox, JSONModel, Game, Repository) {
 	"use strict";
 
-	const oDataEntity = "/Games"
 	const gameModelName = "game";
 
 	return BaseController.extend("com.trifork.tictactoe.controller.Main", {
@@ -13,7 +12,7 @@ sap.ui.define([
 			this._setBusy(true);
 			game.loadActiveGame().then(function(activeGame) {
 				if (activeGame) {
-					this.getView().setModel(new JSONModel(activeGame), gameModelName);
+					this._setGameModel(activeGame);
 				}
 				this._setBusy(false);
 			}.bind(this)).catch(function(error) {
@@ -23,8 +22,7 @@ sap.ui.define([
 		},
 
 		onStartGame: function () {
-			const gameModel = this.getView().getModel(gameModelName);
-			const game = gameModel.getData();
+			const game = this._getGameModel().getData();
 			const validation = game.validatePlayers();
 			
 			if (!validation.valid) {
@@ -33,13 +31,8 @@ sap.ui.define([
 			}
 			
 			this._setBusy(true);
-			const mainModel = this.getView().getModel();
-			const binding = mainModel.bindList(oDataEntity);
-			const context = binding.create(game.getOdataObject());
-
-			context.created().then(function() {
+			game.createNewGame().then(function() {
 				MessageBox.success(this._getText("msgSuccessGameCreated"));
-				gameModel.refresh();
 				this._setBusy(false);
 				//TODO: Navigate to game view
 			}.bind(this)).catch(function(error) {
@@ -49,7 +42,7 @@ sap.ui.define([
 		},
 
 		onNewGame: function () {
-			const game = this.getView().getModel(gameModelName).getData();
+			const game = this._getGameModel().getData();
 			
 			this._setBusy(true);
 			game.reset().then(function() { 
@@ -69,7 +62,7 @@ sap.ui.define([
 			const mainModel = this.getView().getController().getOwnerComponent().getModel();
 			const respository = new Repository(mainModel);
 			const game = new Game(respository);
-			this.getView().setModel(new JSONModel(game), gameModelName);
+			this._setGameModel(game);
 			return game;
 		},
 
@@ -82,6 +75,14 @@ sap.ui.define([
 				this.i18n = this.getView().getModel("i18n").getResourceBundle();
 			}
 			return this.i18n.getText(key, args);
+		},
+
+		_getGameModel: function() {
+			return this.getView().getModel(gameModelName);
+		},
+
+		_setGameModel: function(game) {
+			this.getView().setModel(new JSONModel(game), gameModelName);
 		}
 	});
 });

@@ -15,6 +15,12 @@ sap.ui.define([
 			this.board = this._initializeBoard(board);
 		}
 
+		createNewGame() {
+			return this.repository.createNewGame(this._getOdataObject()).then(function(createdGame) {
+				this.ID = createdGame.ID;
+			}.bind(this));
+		}
+
 		loadActiveGame() {
 			return this.repository.getActiveGame().then((activeGame) => {
 				if (!activeGame) {
@@ -50,7 +56,7 @@ sap.ui.define([
 			return { valid: true };
 		}
 
-		getOdataObject() {
+		_getOdataObject() {
 			return {
 				player1: this.player1,
 				player2: this.player2

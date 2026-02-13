@@ -14,6 +14,9 @@ sap.ui.define(["com/trifork/tictactoe/model/Game"], function (Game) {
 				},
 				deleteGame: function () {
 					return Promise.resolve();
+				},
+				createNewGame: function () {
+					return Promise.resolve({ ID: gameId });
 				}
 			};
 		}
@@ -107,6 +110,26 @@ sap.ui.define(["com/trifork/tictactoe/model/Game"], function (Game) {
 
 		assert.strictEqual(result.valid, false, "validation fails for same names");
 		assert.strictEqual(result.message, "msgErrorSameNames", "returns correct error message");
+	});
+
+	QUnit.test("createNewGame calls repository with correct data", function (assert) {
+		const done = assert.async();
+		let createData = null;
+
+		this.mockRepository.createNewGame = function (data) {
+			createData = data;
+			return Promise.resolve({ ID: gameId });
+		};
+
+		const game = new Game(this.mockRepository, null, playerNames[0], playerNames[1], false);
+
+		game.createNewGame().then(function () {
+			assert.ok(createData, "repository createNewGame was called");
+			assert.strictEqual(createData.player1, playerNames[0], "player1 is sent correctly");
+			assert.strictEqual(createData.player2, playerNames[1], "player2 is sent correctly");
+			assert.strictEqual(game.ID, gameId, "ID is set to returned value");
+			done();
+		});
 	});
 
 	QUnit.test("loadActiveGame returns null when no active game", function (assert) {

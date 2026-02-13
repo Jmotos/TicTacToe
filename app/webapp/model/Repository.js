@@ -10,6 +10,14 @@ sap.ui.define([
 			this.model = model;
 		}
 
+		createNewGame(data) {
+			const binding = this.model.bindList(oDataEntity);
+			const context = binding.create(data);
+			return context.created().then(() => {
+				return context.getObject();
+			});
+		}
+
 		getActiveGame() {
 			const binding = this.model.bindList(oDataEntity, null, null, [
 				new Filter("winner", FilterOperator.EQ, 0)
