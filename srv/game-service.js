@@ -32,8 +32,9 @@ module.exports = cds.service.impl(async function () {
 	});
 
 	this.before('DELETE', Games, async (req) => {
+		const gameId = req.data.ID;
 		const game = new Game(repository);
-		if (! await game.isActive()) {
+		if (! await game.isActive(gameId)) {
 			req.error(400, 'Only active games can be deleted');
 		}
 	});

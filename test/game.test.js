@@ -69,16 +69,16 @@ describe('Game Logic', () => {
 		});
 	});
 
-	describe('Delete Game', () => {
+	describe('Check Game is active, for deleting pourpose', () => {
 
-		test('should allow deletion of active game', async () => {
+		test('should be active when there is not a winner', async () => {
 			const mockRepository = new MockRepository([activeGame]);
 			const game = new Game(mockRepository);
 			const isActive = await game.isActive(activeGameId);
 			expect(isActive).to.be.true;
 		});
 
-		test('should not allow deletion of finished game', async () => {
+		test('should not be active when there is a winner', async () => {
 			const mockRepository = new MockRepository([finishedGame]);
 			const game = new Game(mockRepository);
 			const isActive = await game.isActive(activeGameId);

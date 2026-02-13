@@ -1,5 +1,11 @@
-### Show all games
-GET http://localhost:4004/odata/v4/game/Games?$select=ID,winner
+### Show active game
+# @name games
+GET http://localhost:4004/odata/v4/game/Games?$select=ID,winner&$filter=winner%20eq%200
+
+### Delete active game
+@gameId = {{games.response.body.value[0].ID}}
+DELETE http://localhost:4004/odata/v4/game/Games({{gameId}})
 
 ### Delete a game by ID
-DELETE http://localhost:4004/odata/v4/game/Games(082c6367-5757-494d-8680-6cb16eb7e1a4)
+@id = b975bf3d-8b33-4370-b5d2-eb0461870d3b
+DELETE http://localhost:4004/odata/v4/game/Games({{id}})
