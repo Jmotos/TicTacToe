@@ -16,6 +16,7 @@ entity Games {
                         on board.game = $self;
 }
 
+@cds.autoexpose
 entity BoardCells {
     key ID        : UUID;
         game      : Association to Games;
