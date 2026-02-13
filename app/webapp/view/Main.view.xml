@@ -1,0 +1,76 @@
+<mvc:View
+	controllerName="com.trifork.tictactoe.controller.Main"
+	displayBlock="true"
+	xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:core="sap.ui.core"
+	core:require="{ formatter: 'com/trifork/tictactoe/model/formatter' }">
+
+	<Page
+		id="page"
+		title="{i18n>appTitle}">
+		<content>
+			<VBox
+				alignItems="Center"
+				class="sapUiMediumMarginTop"
+				justifyContent="Center">
+				<Title
+					class="sapUiMediumMarginBottom"
+					level="H1"
+					text="{i18n>titleStartGame}" />
+				<VBox
+					class="sapUiSmallMargin"
+					width="400px">
+					<Label
+						labelFor="player1Input"
+						required="true"
+						text="{i18n>labelPlayer1}" />
+					<Input
+						class="sapUiSmallMarginBottom"
+						editable="{= !${game>/active}}"
+						placeholder="{i18n>placeholderPlayer1}"
+						value="{game>/player1}" />
+					<Label
+						labelFor="player2Input"
+						required="true"
+						text="{i18n>labelPlayer2}" />
+					<Input
+						class="sapUiSmallMarginBottom"
+						editable="{= !${game>/active}}"
+						placeholder="{i18n>placeholderPlayer2}"
+						value="{game>/player2}" />
+					<Button
+						class="sapUiSmallMarginTop"
+						press="onStartGame"
+						text="{i18n>btnPlay}"
+						type="Emphasized"
+						visible="{= !${game>/active}}"
+						width="100%" />
+					<FlexBox
+						class="sapUiSmallMarginTop"
+						visible="{game>/active}"
+						width="100%">
+						<Button
+							press="onNewGame"
+							text="{i18n>btnNewGame}"
+							type="Reject"
+							width="100%">
+							<layoutData>
+								<FlexItemData growFactor="1" />
+							</layoutData>
+						</Button>
+						<Button
+							press="onContinue"
+							text="{i18n>btnContinue}"
+							type="Emphasized"
+							width="100%">
+							<layoutData>
+								<FlexItemData growFactor="1" />
+							</layoutData>
+						</Button>
+					</FlexBox>
+				</VBox>
+			</VBox>
+		</content>
+	</Page>
+</mvc:View>

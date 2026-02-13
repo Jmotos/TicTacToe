@@ -1,0 +1,27 @@
+{
+	"name": "com.trifork.tictactoe",
+	"version": "1.0.0",
+	"description": "UI5 Application: com.trifork.tictactoe",
+	"author": "Jorge",
+	"license": "Apache-2.0",
+	"scripts": {
+		"build": "ui5 build --clean-dest",
+		"start": "ui5 serve --port 8080 -o index.html",
+		"lint": "eslint webapp",
+		"test-ui5": "start-server-and-test start http://localhost:8080 test-runner-coverage",
+		"test-runner": "ui5-test-runner --port 8081 --url http://localhost:8080/test/testsuite.qunit.html",
+		"test-runner-coverage": "ui5-test-runner --port 8081 --url http://localhost:8080/test/testsuite.qunit.html --coverage -ccb 50 -ccf 50 -ccl 50 -ccs 50",
+		"test": "npm run lint && npm run test-ui5"
+	},
+	"devDependencies": {
+		"@ui5/cli": "^4.0.26",
+		"@ui5/middleware-code-coverage": "^2.0.1",
+		"eslint": "^9.36.0",
+		"eslint-plugin-jsdoc": "^60.3.1",
+		"globals": "^16.4.0",
+		"start-server-and-test": "^2.1.2",
+		"ui5-middleware-livereload": "^3.1.4",
+		"ui5-middleware-simpleproxy": "^3.6.2",
+		"ui5-test-runner": "^5.9.1"
+	}
+}
