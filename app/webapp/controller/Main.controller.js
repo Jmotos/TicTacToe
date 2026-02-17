@@ -4,6 +4,7 @@ sap.ui.define([
 	"use strict";
 
 	const gameModelName = "game";
+	const boardRoute = "board";
 
 	return BaseController.extend("com.trifork.tictactoe.controller.Main", {
 		onInit: function () {
@@ -34,7 +35,7 @@ sap.ui.define([
 			game.createNewGame().then(function() {
 				MessageBox.success(this._getText("msgSuccessGameCreated"));
 				this._setBusy(false);
-				//TODO: Navigate to game view
+				this.navTo(boardRoute);
 			}.bind(this)).catch(function(error) {
 				MessageBox.error(this._getText("msgErrorGameCreation", [error.message]));
 				this._setBusy(false);
@@ -55,7 +56,7 @@ sap.ui.define([
 		},
 
 		onContinue: function () {
-			//TODO: Navigate to game view
+			this.navTo(boardRoute);
 		},
 
 		_initializeNewGame: function() {
@@ -78,11 +79,11 @@ sap.ui.define([
 		},
 
 		_getGameModel: function() {
-			return this.getView().getModel(gameModelName);
+			return this.getOwnerComponent().getModel(gameModelName);
 		},
 
 		_setGameModel: function(game) {
-			this.getView().setModel(new JSONModel(game), gameModelName);
+			this.getOwnerComponent().setModel(new JSONModel(game), gameModelName);
 		}
 	});
 });

@@ -20,17 +20,6 @@ module.exports = cds.service.impl(async function () {
 		game.initializeBoardCells();
 	});
 
-	this.before('UPDATE', BoardCells, async (req) => {
-		const { value } = req.data;
-
-		try {
-			const game = factory.createGameForBoard();
-			game.validateCellValue(value);
-		} catch (error) {
-			req.error(400, error.message);
-		}
-	});
-
 	this.before('DELETE', Games, async (req) => {
 		const gameId = req.data.ID;
 		const game = new Game(repository);

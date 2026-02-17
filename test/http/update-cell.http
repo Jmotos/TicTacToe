@@ -1,0 +1,13 @@
+### Get active game with board
+# @name activeGame
+GET http://localhost:4004/odata/v4/game/Games?$filter=winner%20eq%200&$expand=board
+
+### Update first BoardCell from active game to Player1 (value = 1)
+@cellId = {{activeGame.response.body.value[0].board[0].ID}}
+PATCH http://localhost:4004/odata/v4/game/BoardCells({{cellId}})
+Content-Type: application/json
+
+{
+  "value": 1
+}
+

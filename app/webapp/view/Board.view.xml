@@ -1,0 +1,97 @@
+<mvc:View
+	controllerName="com.trifork.tictactoe.controller.Board"
+	displayBlock="true"
+	xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:core="sap.ui.core">
+
+	<Page
+		title="{i18n>titleBoard}">
+		<content>
+			<VBox
+				alignItems="Center"
+				class="sapUiMediumMarginTop"
+				justifyContent="Center">
+				
+				<HBox 
+					alignItems="Center"
+					class="sapUiSmallMarginBottom">
+					<Text 
+						text="Active player: {= ${game>/activePlayer} === 1 ? ${game>/player1} : ${game>/player2} }"
+						class="sapUiSmallMarginEnd" />
+					<core:Icon
+						src="{= ${game>/activePlayer} === 1 ? 'sap-icon://circle-task' : 'sap-icon://decline' }"
+						size="1rem" />
+				</HBox>
+				
+				<Panel
+					headerText="Game Board"
+					class="sapUiResponsiveMargin"
+					width="auto">
+					<VBox class="sapUiSmallMargin">
+						<HBox width="100%">
+							<Button
+								class="sapUiTinyMarginBegin"
+								enabled="{= ${game>/board/0/0/value} === 0}"
+								icon="{= ${game>/board/0/0/value} === 1 ? 'sap-icon://circle-task' : ${game>/board/0/0/value} === 2 ? 'sap-icon://decline' : ''}"
+								press="onCellPress($event, 0, 0)"
+								width="2rem" />
+							<Button
+								class="sapUiTinyMarginBegin"
+								enabled="{= ${game>/board/0/1/value} === 0}"
+								icon="{= ${game>/board/0/1/value} === 1 ? 'sap-icon://circle-task' : ${game>/board/0/1/value} === 2 ? 'sap-icon://decline' : ''}"
+								press="onCellPress($event, 0, 1)"
+								width="2rem" />
+							<Button
+								class="sapUiTinyMarginBegin"
+								enabled="{= ${game>/board/0/2/value} === 0}"
+								icon="{= ${game>/board/0/2/value} === 1 ? 'sap-icon://circle-task' : ${game>/board/0/2/value} === 2 ? 'sap-icon://decline' : ''}"
+								press="onCellPress($event, 0, 2)"
+								width="2rem" />
+						</HBox>
+						<HBox width="100%">
+							<Button
+								class="sapUiTinyMarginBegin"
+								enabled="{= ${game>/board/1/0/value} === 0}"
+								icon="{= ${game>/board/1/0/value} === 1 ? 'sap-icon://circle-task' : ${game>/board/1/0/value} === 2 ? 'sap-icon://decline' : ''}"
+								press="onCellPress($event, 1, 0)"
+								width="2rem" />
+							<Button
+								class="sapUiTinyMarginBegin"
+								enabled="{= ${game>/board/1/1/value} === 0}"
+								icon="{= ${game>/board/1/1/value} === 1 ? 'sap-icon://circle-task' : ${game>/board/1/1/value} === 2 ? 'sap-icon://decline' : ''}"
+								press="onCellPress($event, 1, 1)"
+								width="2rem" />
+							<Button
+								class="sapUiTinyMarginBegin"
+								enabled="{= ${game>/board/1/2/value} === 0}"
+								icon="{= ${game>/board/1/2/value} === 1 ? 'sap-icon://circle-task' : ${game>/board/1/2/value} === 2 ? 'sap-icon://decline' : ''}"
+								press="onCellPress($event, 1, 2)"
+								width="2rem" />
+						</HBox>
+						<HBox width="100%">
+							<Button
+								class="sapUiTinyMarginBegin"
+								enabled="{= ${game>/board/2/0/value} === 0}"
+								icon="{= ${game>/board/2/0/value} === 1 ? 'sap-icon://circle-task' : ${game>/board/2/0/value} === 2 ? 'sap-icon://decline' : ''}"
+								press="onCellPress($event, 2, 0)"
+								width="2rem" />
+							<Button
+								class="sapUiTinyMarginBegin"
+								enabled="{= ${game>/board/2/1/value} === 0}"
+								icon="{= ${game>/board/2/1/value} === 1 ? 'sap-icon://circle-task' : ${game>/board/2/1/value} === 2 ? 'sap-icon://decline' : ''}"
+								press="onCellPress($event, 2, 1)"
+								width="2rem" />
+							<Button
+								class="sapUiTinyMarginBegin"
+								enabled="{= ${game>/board/2/2/value} === 0}"
+								icon="{= ${game>/board/2/2/value} === 1 ? 'sap-icon://circle-task' : ${game>/board/2/2/value} === 2 ? 'sap-icon://decline' : ''}"
+								press="onCellPress($event, 2, 2)"
+								width="2rem" />
+						</HBox>
+					</VBox>
+				</Panel>
+			</VBox>
+		</content>
+	</Page>
+</mvc:View>

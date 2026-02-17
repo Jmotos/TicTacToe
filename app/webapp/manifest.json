@@ -91,12 +91,21 @@
 					"pattern": "",
 					"name": "main",
 					"target": "main"
+				},
+				{
+					"pattern": "board",
+					"name": "board",
+					"target": "board"
 				}
 			],
 			"targets": {
 				"main": {
 					"viewId": "main",
 					"viewName": "Main"
+				},
+				"board": {
+					"viewId": "board",
+					"viewName": "Board"
 				}
 			}
 		}

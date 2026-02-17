@@ -41,6 +41,34 @@ sap.ui.define([
 				return contexts[0].delete("$direct");
 			});
 		}
+
+		updateMove(cellId, gameId, cellValue, nextPlayer) {
+			const cellBinding = this.model.bindContext("/BoardCells(" + cellId + ")");
+			const gameBinding = this.model.bindContext(oDataEntity + "(" + gameId + ")");
+
+			return Promise.all([
+				cellBinding.requestObject(),
+				gameBinding.requestObject()
+			]).then(() => {
+				const cellContext = cellBinding.getBoundContext();
+				const gameContext = gameBinding.getBoundContext();
+
+				cellContext.setProperty("value", cellValue);
+				gameContext.setProperty("activePlayer", nextPlayer);
+
+				return this.model.submitBatch("$auto").then(() => {
+					return {
+						cell: {
+							value: cellContext.getProperty("value")
+						},
+						game: {
+							activePlayer: gameContext.getProperty("activePlayer")
+						}
+					};
+				});
+			});
+		}
+
 	}
 
 });
