@@ -23,6 +23,7 @@ sap.ui.define([
 			this.activePlayer = this._getRandomStartingPlayer();
 			return this.repository.createNewGame(this._getOdataObject()).then(function(createdGame) {
 				this.ID = createdGame.ID;
+				this.active = true;
 			}.bind(this));
 		}
 

@@ -33,7 +33,7 @@ sap.ui.define([
 			
 			this._setBusy(true);
 			game.createNewGame().then(function() {
-				MessageBox.success(this._getText("msgSuccessGameCreated"));
+				this._getGameModel().refresh();
 				this._setBusy(false);
 				this.navTo(boardRoute);
 			}.bind(this)).catch(function(error) {
