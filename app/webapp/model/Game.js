@@ -1,6 +1,6 @@
 sap.ui.define([
-	"./Cell"
-], function (Cell) {
+	"./Cell", "./Rules"
+], function (Cell, Rules) {
 	"use strict";
 
 	const empty = 0;
@@ -11,6 +11,7 @@ sap.ui.define([
 	return class Game {
 		constructor(repository, id, player1, player2, active, activePlayer, board = []) {
 			this.repository = repository;
+			this.rules = new Rules();
 			this.ID = id;
 			this.player1 = player1 || "";
 			this.player2 = player2 || "";
@@ -22,8 +23,7 @@ sap.ui.define([
 		createNewGame() {
 			this.activePlayer = this._getRandomStartingPlayer();
 			return this.repository.createNewGame(this._getOdataObject()).then(function(createdGame) {
-				this.ID = createdGame.ID;
-				this.active = true;
+				return new Game(this.repository, createdGame.ID, createdGame.player1, createdGame.player2, true, createdGame.activePlayer, createdGame.board);
 			}.bind(this));
 		}
 
@@ -97,10 +97,11 @@ sap.ui.define([
 			const nextPlayer = this.activePlayer === player1 ? player2 : player1;
 
 			return this.repository.updateMove(cell.ID, this.ID, currentPlayer, nextPlayer)
-				.then((data) => {
+				.then(function(data) {
 					this.activePlayer = data.game.activePlayer;
 					cell.value = data.cell.value;
-				});
+					return this.rules.getStatus(this.board, cell);
+				}.bind(this));
 		}
 
 	}

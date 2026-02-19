@@ -32,8 +32,8 @@ sap.ui.define([
 			}
 			
 			this._setBusy(true);
-			game.createNewGame().then(function() {
-				this._getGameModel().refresh();
+			game.createNewGame().then(function(createdGame) {
+				this._setGameModel(createdGame);
 				this._setBusy(false);
 				this.navTo(boardRoute);
 			}.bind(this)).catch(function(error) {

@@ -140,11 +140,11 @@ sap.ui.define(["com/trifork/tictactoe/model/Game"], function (Game) {
 
 				const game = new Game(this.mockRepository, null, playerNames[0], playerNames[1], false);
 
-				game.createNewGame().then(function () {
+				game.createNewGame().then(function (newGame) {
 					assert.ok(createData, "repository createNewGame was called");
 					assert.strictEqual(createData.player1, playerNames[0], "player1 is sent correctly");
 					assert.strictEqual(createData.player2, playerNames[1], "player2 is sent correctly");
-					assert.strictEqual(game.ID, gameId, "ID is set to returned value");
+					assert.strictEqual(newGame.ID, gameId, "ID is set to returned value");
 					done();
 				});
 			});
@@ -267,6 +267,228 @@ sap.ui.define(["com/trifork/tictactoe/model/Game"], function (Game) {
 					done();
 				});
 			});
+
+			function _checkWinner(assert, mockRepository, boardData, clickedCell) {
+				const done = assert.async();
+				const player1 = 1;
+				const nextPlayer = 2;
+
+				mockRepository.updateMove = function () {
+					return Promise.resolve({
+						cell: { value: player1 },
+						game: { activePlayer: nextPlayer }
+					});
+				};
+
+				const game = new Game(mockRepository, gameId, playerNames[0], playerNames[1], true, 1, boardData);
+
+				game.clickCell(clickedCell.row, clickedCell.col).then(function (status) {
+					assert.strictEqual(status.winner, player1, "player 1 wins");
+					assert.strictEqual(status.draw, false, "it is not a draw");
+					done();
+				});
+			}
+
+			hooks.beforeEach(function () {
+				this.mockRepository = createMockRepository();
+			});
+
+			QUnit.test("there is no winner after click when there are less than 5 filled cells", function (assert) {
+				const done = assert.async();
+				const boardData = [
+					{ ID: "00", row: 0, col: 0, value: 0 },
+					{ ID: "01", row: 0, col: 1, value: 1 },
+					{ ID: "10", row: 1, col: 0, value: 2 },
+					{ ID: "11", row: 1, col: 1, value: 1 }
+				];
+
+				this.mockRepository.updateMove = function () {
+					return Promise.resolve({
+						cell: { value: 1 },
+						game: { activePlayer: 2 }
+					});
+				};
+
+				const game = new Game(this.mockRepository, gameId, playerNames[0], playerNames[1], true, 1, boardData);
+
+				game.clickCell(0, 0).then(function (status) {
+					assert.strictEqual(status.winner, null, "there is no winner");
+					assert.strictEqual(status.draw, false, "it is not a draw");
+					done();
+				});
+			});
+
+			QUnit.test("player wins when fills column 00-10-20", function (assert) {
+				const clickedCell = { row: 0, col: 0};
+				const boardData = [
+					{ ID: "00", row: 0, col: 0, value: 0 },
+					{ ID: "01", row: 0, col: 1, value: 2 },
+					{ ID: "02", row: 0, col: 2, value: 2 },
+					{ ID: "10", row: 1, col: 0, value: 1 },
+					{ ID: "11", row: 1, col: 1, value: 0 },
+					{ ID: "12", row: 1, col: 2, value: 0 },
+					{ ID: "20", row: 2, col: 0, value: 1 },
+					{ ID: "21", row: 2, col: 1, value: 0 },
+					{ ID: "22", row: 2, col: 2, value: 0 },
+				];
+
+				_checkWinner(assert, this.mockRepository, boardData, clickedCell);
+			});
+
+			QUnit.test("player wins when fills column 01-11-21", function (assert) {
+				const clickedCell = { row: 0, col: 1};
+				const boardData = [
+					{ ID: "00", row: 0, col: 0, value: 2 },
+					{ ID: "01", row: 0, col: 1, value: 0 },
+					{ ID: "02", row: 0, col: 2, value: 2 },
+					{ ID: "10", row: 1, col: 0, value: 0 },
+					{ ID: "11", row: 1, col: 1, value: 1 },
+					{ ID: "12", row: 1, col: 2, value: 0 },
+					{ ID: "20", row: 2, col: 0, value: 0 },
+					{ ID: "21", row: 2, col: 1, value: 1 },
+					{ ID: "22", row: 2, col: 2, value: 0 },
+				];
+
+				_checkWinner(assert, this.mockRepository, boardData, clickedCell);
+			});
+
+			QUnit.test("player wins when fills column 02-12-22", function (assert) {
+				const clickedCell = { row: 0, col: 2};
+				const boardData = [
+					{ ID: "00", row: 0, col: 0, value: 2 },
+					{ ID: "01", row: 0, col: 1, value: 2 },
+					{ ID: "02", row: 0, col: 2, value: 0 },
+					{ ID: "10", row: 1, col: 0, value: 0 },
+					{ ID: "11", row: 1, col: 1, value: 0 },
+					{ ID: "12", row: 1, col: 2, value: 1 },
+					{ ID: "20", row: 2, col: 0, value: 0 },
+					{ ID: "21", row: 2, col: 1, value: 0 },
+					{ ID: "22", row: 2, col: 2, value: 1 },
+				];
+
+				_checkWinner(assert, this.mockRepository, boardData, clickedCell);
+			});
+
+			QUnit.test("player wins when fills row 00-01-02", function (assert) {
+				const clickedCell = { row: 0, col: 0};
+				const boardData = [
+					{ ID: "00", row: 0, col: 0, value: 0 },
+					{ ID: "01", row: 0, col: 1, value: 1 },
+					{ ID: "02", row: 0, col: 2, value: 1 },
+					{ ID: "10", row: 1, col: 0, value: 0 },
+					{ ID: "11", row: 1, col: 1, value: 0 },
+					{ ID: "12", row: 1, col: 2, value: 2 },
+					{ ID: "20", row: 2, col: 0, value: 0 },
+					{ ID: "21", row: 2, col: 1, value: 0 },
+					{ ID: "22", row: 2, col: 2, value: 2 },
+				];
+
+				_checkWinner(assert, this.mockRepository, boardData, clickedCell);
+			});
+
+			QUnit.test("player wins when fills row 10-11-12", function (assert) {
+				const clickedCell = { row: 1, col: 0};
+				const boardData = [
+					{ ID: "00", row: 0, col: 0, value: 0 },
+					{ ID: "01", row: 0, col: 1, value: 2 },
+					{ ID: "02", row: 0, col: 2, value: 2 },
+					{ ID: "10", row: 1, col: 0, value: 0 },
+					{ ID: "11", row: 1, col: 1, value: 1 },
+					{ ID: "12", row: 1, col: 2, value: 1 },
+					{ ID: "20", row: 2, col: 0, value: 0 },
+					{ ID: "21", row: 2, col: 1, value: 0 },
+					{ ID: "22", row: 2, col: 2, value: 0 },
+				];
+
+				_checkWinner(assert, this.mockRepository, boardData, clickedCell);
+			});
+
+			QUnit.test("player wins when fills row 20-21-22", function (assert) {
+				const clickedCell = { row: 2, col: 0};
+				const boardData = [
+					{ ID: "00", row: 0, col: 0, value: 0 },
+					{ ID: "01", row: 0, col: 1, value: 2 },
+					{ ID: "02", row: 0, col: 2, value: 2 },
+					{ ID: "10", row: 1, col: 0, value: 0 },
+					{ ID: "11", row: 1, col: 1, value: 0 },
+					{ ID: "12", row: 1, col: 2, value: 0 },
+					{ ID: "20", row: 2, col: 0, value: 0 },
+					{ ID: "21", row: 2, col: 1, value: 1 },
+					{ ID: "22", row: 2, col: 2, value: 1 },
+				];
+
+				_checkWinner(assert, this.mockRepository, boardData, clickedCell);
+			});
+
+			QUnit.test("player wins when fills diagonal 00-11-22", function (assert) {
+				const clickedCell = { row: 2, col: 2};
+				const boardData = [
+					{ ID: "00", row: 0, col: 0, value: 1 },
+					{ ID: "01", row: 0, col: 1, value: 0 },
+					{ ID: "02", row: 0, col: 2, value: 2 },
+					{ ID: "10", row: 1, col: 0, value: 0 },
+					{ ID: "11", row: 1, col: 1, value: 1 },
+					{ ID: "12", row: 1, col: 2, value: 2 },
+					{ ID: "20", row: 2, col: 0, value: 0 },
+					{ ID: "21", row: 2, col: 1, value: 0 },
+					{ ID: "22", row: 2, col: 2, value: 0 },
+				];
+
+				_checkWinner(assert, this.mockRepository, boardData, clickedCell);
+			});
+
+			QUnit.test("player wins when fills diagonal 02-11-20", function (assert) {
+				const clickedCell = { row: 2, col: 0};
+				const boardData = [
+					{ ID: "00", row: 0, col: 0, value: 0 },
+					{ ID: "01", row: 0, col: 1, value: 2 },
+					{ ID: "02", row: 0, col: 2, value: 1 },
+					{ ID: "10", row: 1, col: 0, value: 0 },
+					{ ID: "11", row: 1, col: 1, value: 1 },
+					{ ID: "12", row: 1, col: 2, value: 2 },
+					{ ID: "20", row: 2, col: 0, value: 0 },
+					{ ID: "21", row: 2, col: 1, value: 0 },
+					{ ID: "22", row: 2, col: 2, value: 0 },
+				];
+
+				_checkWinner(assert, this.mockRepository, boardData, clickedCell);
+			});
+
+			QUnit.test("there is a draw when the board is filled and not any player wins", function (assert) {
+				const done = assert.async();
+				const player1 = 1;
+				const noWinner = null;
+				const nextPlayer = 2;
+				const clickedCell = { row: 2, col: 1};
+				const boardData = [
+					{ ID: "00", row: 0, col: 0, value: 1 },
+					{ ID: "01", row: 0, col: 1, value: 2 },
+					{ ID: "02", row: 0, col: 2, value: 1 },
+					{ ID: "10", row: 1, col: 0, value: 2 },
+					{ ID: "11", row: 1, col: 1, value: 2 },
+					{ ID: "12", row: 1, col: 2, value: 1 },
+					{ ID: "20", row: 2, col: 0, value: 1 },
+					{ ID: "21", row: 2, col: 1, value: 0 },
+					{ ID: "22", row: 2, col: 2, value: 2 },
+				];
+
+				this.mockRepository.updateMove = function () {
+					return Promise.resolve({
+						cell: { value: player1 },
+						game: { activePlayer: nextPlayer }
+					});
+				};
+
+				const game = new Game(this.mockRepository, gameId, playerNames[0], playerNames[1], true, 1, boardData);
+
+				game.clickCell(clickedCell.row, clickedCell.col).then(function (status) {
+					assert.strictEqual(status.winner, noWinner, "there is not any winner");
+					assert.strictEqual(status.draw, true, "it is a draw");
+					done();
+				});
+			});
+
+
 		});
 	});
 });

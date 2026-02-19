@@ -14,7 +14,20 @@ sap.ui.define([
 			const binding = this.model.bindList(oDataEntity);
 			const context = binding.create(data);
 			return context.created().then(() => {
-				return context.getObject();
+				const createdGame = context.getObject();
+				return this._getGameWithBoard(createdGame.ID);
+			});
+		}
+
+		_getGameWithBoard(gameId) {
+			const binding = this.model.bindList(oDataEntity, null, null, [
+				new Filter("ID", FilterOperator.EQ, gameId)
+			], {
+				$expand: "board"
+			});
+
+			return binding.requestContexts(0, 1).then((contexts) => {
+				return contexts[0]?.getObject();
 			});
 		}
 
