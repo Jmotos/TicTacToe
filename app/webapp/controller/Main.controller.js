@@ -1,19 +1,18 @@
 sap.ui.define([
-	"./BaseController", "sap/m/MessageBox", "sap/ui/model/json/JSONModel", "../model/Game", "../model/Repository"
-], function (BaseController, MessageBox, JSONModel, Game, Repository) {
+	"./BaseController", "sap/m/MessageBox"
+], function (BaseController, MessageBox) {
 	"use strict";
 
-	const gameModelName = "game";
 	const boardRoute = "board";
 
 	return BaseController.extend("com.trifork.tictactoe.controller.Main", {
 		onInit: function () {
-			const game = this._initializeNewGame();
+			const game = this.initializeNewGame();
 
 			this._setBusy(true);
 			game.loadActiveGame().then(function(activeGame) {
 				if (activeGame) {
-					this._setGameModel(activeGame);
+					this.setGameModel(activeGame);
 				}
 				this._setBusy(false);
 			}.bind(this)).catch(function(error) {
@@ -23,7 +22,7 @@ sap.ui.define([
 		},
 
 		onStartGame: function () {
-			const game = this._getGameModel().getData();
+			const game = this.getGameModel().getData();
 			const validation = game.validatePlayers();
 			
 			if (!validation.valid) {
@@ -33,7 +32,7 @@ sap.ui.define([
 			
 			this._setBusy(true);
 			game.createNewGame().then(function(createdGame) {
-				this._setGameModel(createdGame);
+				this.setGameModel(createdGame);
 				this._setBusy(false);
 				this.navTo(boardRoute);
 			}.bind(this)).catch(function(error) {
@@ -43,11 +42,11 @@ sap.ui.define([
 		},
 
 		onNewGame: function () {
-			const game = this._getGameModel().getData();
+			const game = this.getGameModel().getData();
 			
 			this._setBusy(true);
 			game.reset().then(function() { 
-				this._initializeNewGame();
+				this.initializeNewGame();
 				this._setBusy(false);
 			}.bind(this)).catch(function(error) {
 				MessageBox.error(this._getText("msgErrorDeletingGame", [error.message]));
@@ -59,14 +58,6 @@ sap.ui.define([
 			this.navTo(boardRoute);
 		},
 
-		_initializeNewGame: function() {
-			const mainModel = this.getView().getController().getOwnerComponent().getModel();
-			const respository = new Repository(mainModel);
-			const game = new Game(respository);
-			this._setGameModel(game);
-			return game;
-		},
-
 		_setBusy: function(isBusy) {
 			this.getView().setBusy(isBusy);
 		},
@@ -76,14 +67,6 @@ sap.ui.define([
 				this.i18n = this.getView().getModel("i18n").getResourceBundle();
 			}
 			return this.i18n.getText(key, args);
-		},
-
-		_getGameModel: function() {
-			return this.getOwnerComponent().getModel(gameModelName);
-		},
-
-		_setGameModel: function(game) {
-			this.getOwnerComponent().setModel(new JSONModel(game), gameModelName);
 		}
 	});
 });

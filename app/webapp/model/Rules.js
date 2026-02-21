@@ -10,7 +10,7 @@ sap.ui.define([], function () {
 			const filledCells = board.flat().filter(cell => cell.value !== empty).length;
 
 			if (filledCells < 5) {
-				return { winner: null, draw: false };
+				return { winner: 0, draw: false };
 			}
 
 			const winnerColumns = this._getWinnerColumns(clickedCell, boardSize);
@@ -40,10 +40,10 @@ sap.ui.define([], function () {
 			}
 
 			if (filledCells === boardSize * boardSize) {
-				return { winner: null, draw: true };
+				return { winner: 0, draw: true };
 			}
 
-			return { winner: null, draw: false };
+			return { winner: 0, draw: false };
 		}
 
 		_getWinnerColumns(cell, boardSize) {
@@ -68,7 +68,7 @@ sap.ui.define([], function () {
 
 		_getWinnerMainDiagonals(cell, boardSize) {
 			const diagonals = [];
-			let min = Math.min(cell.row, cell.col);
+			const min = Math.min(cell.row, cell.col);
 			const minDiagonal = { row: cell.row - min, col: cell.col - min };
 
 			while (minDiagonal.row < boardSize && minDiagonal.col < boardSize) {
@@ -82,7 +82,7 @@ sap.ui.define([], function () {
 
 		_getWinnerSecondaryDiagonals(cell, boardSize) {
 			const diagonals = [];
-			let min = Math.min(cell.row, cell.col);
+			const min = Math.min(cell.row, cell.col);
 			const minDiagonal = { row: cell.row - min, col: cell.col + min };
 
 			while (minDiagonal.row >= 0 && minDiagonal.col < boardSize) {

@@ -6,6 +6,7 @@ sap.ui.define(["com/trifork/tictactoe/model/Game"], function (Game) {
 	const fullSpacesPlayerName = "   ";
 	const gameId = "test-game-123";
 	const initialActivePlayer = 0;
+	const noWinner = 0;
 
 	function createMockRepository() {
 		return {
@@ -20,6 +21,10 @@ sap.ui.define(["com/trifork/tictactoe/model/Game"], function (Game) {
 			}
 		};
 	}
+
+	function createNewGame(repository, active = false, boardData = []) {
+		return new Game(repository, gameId, playerNames[0], playerNames[1], active, initialActivePlayer, noWinner, boardData);
+	};
 
 	QUnit.module("Game Model", function () {
 		QUnit.module("constructor", function (hooks) {
@@ -65,7 +70,7 @@ sap.ui.define(["com/trifork/tictactoe/model/Game"], function (Game) {
 					{ row: 2, col: 1, value: 0 },
 					{ row: 2, col: 2, value: 1 },
 				];
-				const game = new Game(this.mockRepository, gameId, playerNames[0], playerNames[1], true, initialActivePlayer, boardData);
+				const game = createNewGame(this.mockRepository, true, boardData);
 
 				assert.strictEqual(game.board[0][0].value, boardData[0].value, "board cell [0][0] has correct value");
 				assert.strictEqual(game.board[0][1].value, boardData[1].value, "board cell [0][1] has correct value");
@@ -138,7 +143,7 @@ sap.ui.define(["com/trifork/tictactoe/model/Game"], function (Game) {
 					return Promise.resolve({ ID: gameId });
 				};
 
-				const game = new Game(this.mockRepository, null, playerNames[0], playerNames[1], false);
+				const game = createNewGame(this.mockRepository);
 
 				game.createNewGame().then(function (newGame) {
 					assert.ok(createData, "repository createNewGame was called");
@@ -237,7 +242,7 @@ sap.ui.define(["com/trifork/tictactoe/model/Game"], function (Game) {
 					});
 				};
 
-				const game = new Game(this.mockRepository, gameId, playerNames[0], playerNames[1], true, initialPlayer, boardData);
+				const game = createNewGame(this.mockRepository, true, boardData);
 
 				game.clickCell(1, 1).then(function () {
 					assert.strictEqual(game.activePlayer, nextPlayer, "activePlayer is updated to 2");
@@ -260,7 +265,7 @@ sap.ui.define(["com/trifork/tictactoe/model/Game"], function (Game) {
 					});
 				};
 
-				const game = new Game(this.mockRepository, gameId, playerNames[0], playerNames[1], true, initialPlayer, boardData);
+				const game = createNewGame(this.mockRepository, true, boardData);
 
 				game.clickCell(1, 1).then(function () {
 					assert.strictEqual(game.board[1][1].value, nextPlayer, "clicked cell value is updated to 2");
@@ -280,7 +285,7 @@ sap.ui.define(["com/trifork/tictactoe/model/Game"], function (Game) {
 					});
 				};
 
-				const game = new Game(mockRepository, gameId, playerNames[0], playerNames[1], true, 1, boardData);
+				const game = createNewGame(mockRepository, true, boardData);
 
 				game.clickCell(clickedCell.row, clickedCell.col).then(function (status) {
 					assert.strictEqual(status.winner, player1, "player 1 wins");
@@ -288,10 +293,6 @@ sap.ui.define(["com/trifork/tictactoe/model/Game"], function (Game) {
 					done();
 				});
 			}
-
-			hooks.beforeEach(function () {
-				this.mockRepository = createMockRepository();
-			});
 
 			QUnit.test("there is no winner after click when there are less than 5 filled cells", function (assert) {
 				const done = assert.async();
@@ -309,10 +310,10 @@ sap.ui.define(["com/trifork/tictactoe/model/Game"], function (Game) {
 					});
 				};
 
-				const game = new Game(this.mockRepository, gameId, playerNames[0], playerNames[1], true, 1, boardData);
+				const game = createNewGame(this.mockRepository, true, boardData);
 
 				game.clickCell(0, 0).then(function (status) {
-					assert.strictEqual(status.winner, null, "there is no winner");
+					assert.strictEqual(status.winner, 0, "there is no winner");
 					assert.strictEqual(status.draw, false, "it is not a draw");
 					done();
 				});
@@ -457,7 +458,6 @@ sap.ui.define(["com/trifork/tictactoe/model/Game"], function (Game) {
 			QUnit.test("there is a draw when the board is filled and not any player wins", function (assert) {
 				const done = assert.async();
 				const player1 = 1;
-				const noWinner = null;
 				const nextPlayer = 2;
 				const clickedCell = { row: 2, col: 1};
 				const boardData = [
@@ -479,7 +479,7 @@ sap.ui.define(["com/trifork/tictactoe/model/Game"], function (Game) {
 					});
 				};
 
-				const game = new Game(this.mockRepository, gameId, playerNames[0], playerNames[1], true, 1, boardData);
+				const game = createNewGame(this.mockRepository, true, boardData);
 
 				game.clickCell(clickedCell.row, clickedCell.col).then(function (status) {
 					assert.strictEqual(status.winner, noWinner, "there is not any winner");

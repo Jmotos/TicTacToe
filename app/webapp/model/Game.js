@@ -9,21 +9,22 @@ sap.ui.define([
 	const player2 = 2;
 
 	return class Game {
-		constructor(repository, id, player1, player2, active, activePlayer, board = []) {
+		constructor(repository, id, player1, player2, active, activePlayer, winner, board = []) {
 			this.repository = repository;
 			this.rules = new Rules();
 			this.ID = id;
 			this.player1 = player1 || "";
 			this.player2 = player2 || "";
 			this.active = active || false;
-			this.activePlayer = activePlayer;
+			this.winner = winner || 0;
+			this.activePlayer = activePlayer || 0;
 			this.board = this._initializeBoard(board);
 		}
 
 		createNewGame() {
 			this.activePlayer = this._getRandomStartingPlayer();
 			return this.repository.createNewGame(this._getOdataObject()).then(function(createdGame) {
-				return new Game(this.repository, createdGame.ID, createdGame.player1, createdGame.player2, true, createdGame.activePlayer, createdGame.board);
+				return new Game(this.repository, createdGame.ID, createdGame.player1, createdGame.player2, true, createdGame.activePlayer, createdGame.winner, createdGame.board);
 			}.bind(this));
 		}
 
@@ -32,7 +33,7 @@ sap.ui.define([
 				if (!activeGame) {
 					return null;
 				}
-				return new Game(this.repository, activeGame.ID, activeGame.player1, activeGame.player2, true, activeGame.activePlayer, activeGame.board);
+				return new Game(this.repository, activeGame.ID, activeGame.player1, activeGame.player2, true, activeGame.activePlayer, activeGame.winner, activeGame.board);
 			});
 		}
 
@@ -100,7 +101,9 @@ sap.ui.define([
 				.then(function(data) {
 					this.activePlayer = data.game.activePlayer;
 					cell.value = data.cell.value;
-					return this.rules.getStatus(this.board, cell);
+					const status = this.rules.getStatus(this.board, cell);
+					this.winner = status.winner;
+					return status;
 				}.bind(this));
 		}
 
